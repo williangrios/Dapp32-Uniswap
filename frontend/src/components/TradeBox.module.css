@@ -1,0 +1,51 @@
+.tradebox{
+    padding: 9px;
+    border-radius: 8px;
+    margin: 10px auto;
+    border: 1px solid #7e7e7e;
+    background-color: #ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 600px;
+}
+
+.tradebox h2{
+    margin: 4px;
+    font-size: 1.3em;
+}
+
+.internal_box{
+    width: 100%;
+    min-height: 30px;
+    background-color: rgb(163, 163, 163);
+    border:none;
+    margin: 11px 0;
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding: 12px 7px 0;
+    align-items:start;
+}
+
+.internal_box p{
+    display: inline-block;
+    padding-right: 15px;
+    text-align: right;
+}
+
+
+.arrow_box{
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    margin: -16px auto;
+    border: 3px solid #7e7e7e;
+    background-color: rgb(163, 163, 163);
+    z-index: 2;
+}
+
+input, select{
+    border-radius: 5px;
+    border: none;
+}
