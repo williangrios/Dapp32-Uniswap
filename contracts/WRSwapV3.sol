@@ -54,3 +54,4 @@ contract WRSwapV3 {
 }
 
 //contract address goerli 0xBD1e19D3f581F273FFa640f32699cdE70e63a895
+88.85307

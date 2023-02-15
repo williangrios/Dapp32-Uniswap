@@ -35,7 +35,8 @@ const TradeBox = ({user, provider, toast}) => {
   const [tokenOut, setTokenOut] = useState({indexTicker: 1, ticker: mainToken[1].ticker, contract: mainToken[1].contract, balance: 0, amount: 0, allowed: 0})
 
   const [signer, setSigner] = useState()
-  const [loadingBalance, setLoadingBalance] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [loadingTransaction, setLoadingTransaction] = useState(false)
 
   useEffect(() => {
     isUserLoggedIn()
@@ -64,7 +65,6 @@ const TradeBox = ({user, provider, toast}) => {
       return true
     }
   }
- 
 
   async function handleSelectToken(InOut, indexTicker, ticker, amount = 0) {
     if (ticker === 'OTHER'){
@@ -94,7 +94,7 @@ const TradeBox = ({user, provider, toast}) => {
       return
     }
     try{
-      setLoadingBalance(true)
+      setLoading(true)
       const balanceToken = await getBalance(contractAddress, user.account)
       const allowed = await getAmountAllowed(contractAddress, user.account)
       if (InOut === "IN"){
@@ -105,7 +105,7 @@ const TradeBox = ({user, provider, toast}) => {
     }catch(error){
       console.log(error);
     }finally{
-      setLoadingBalance(false)
+      setLoading(false)
     }
 
     
@@ -123,7 +123,7 @@ const TradeBox = ({user, provider, toast}) => {
     }
     
     try{
-      setLoadingBalance(true)
+      setLoading(true)
       const instanceContractToken = await returnContractERC20Instance(contractAddress)
       const tokenAmount = await instanceContractToken.balanceOf(accountUser.toString())
       return tokenAmount.toString()
@@ -132,7 +132,7 @@ const TradeBox = ({user, provider, toast}) => {
       if (e.code === 'CALL_EXCEPTION') return 'Contract not found'
       if (e.code === 'INVALID_ARGUMENT') return 'Invalid contract'
     }finally{
-      setLoadingBalance(false)
+      setLoading(false)
     }
   }
   
@@ -142,7 +142,7 @@ const TradeBox = ({user, provider, toast}) => {
     }
     
     try{
-      setLoadingBalance(true)
+      setLoading(true)
       const sign = await getSigner()
       const instanceContractToken = new ethers.Contract(contractAddress.toString(), IERC20.abi, sign )
       const tokenAllowance = await instanceContractToken.allowance(accountUser.toString(), SWAP_V3_ADDRESS)
@@ -152,48 +152,44 @@ const TradeBox = ({user, provider, toast}) => {
       if (e.code === 'CALL_EXCEPTION') return 'Contract not found'
       if (e.code === 'INVALID_ARGUMENT') return 'Invalid contract'
     }finally{
-      setLoadingBalance(false)
+      setLoading(false)
     }
   }
 
   async function handleApprove(e) {
-    //e.preventDefault()
     if(!isUserLoggedIn()){
       return 0
     }
     
     try{
-      setLoadingBalance(true)
+      setLoadingTransaction(true)
       const instanceContractToken = await returnContractERC20Instance(tokenIn.contract)
       const res = await instanceContractToken.approve(SWAP_V3_ADDRESS, tokenIn.amount)
       await res.wait();
       toastMessage("Now is allowed to trade.")
-
+      handleSelectToken("IN", tokenIn.indexTicker, tokenIn.ticker, tokenIn.amount)
     }catch(e){
-      console.log(e);
       if (e.code === 'CALL_EXCEPTION') return 'Contract not found'
       if (e.code === 'INVALID_ARGUMENT') return 'Invalid contract'
     }finally{
-      setLoadingBalance(false)
+      setLoadingTransaction(false)
     }
-
   }
 
   async function handleSwap(e) {
-    e.preventDefault()
-
     try {
-
+      setLoadingTransaction(true)
       const sign = await getSigner()
       const contrSwapV3 = new ethers.Contract(SWAP_V3_ADDRESS, WRSWAPV3.abi, sign )
       const amountOut = await contrSwapV3.swapExactInputSingle(tokenIn.contract, tokenOut.contract, tokenIn.amount);  
       await amountOut.wait()
-      console.log();
-
       toastMessage("Traded sucessfully!")
+      handleSelectToken("IN", tokenIn.indexTicker, tokenIn.ticker, 0)
     } catch (error) {
-      console.log('erro');
-      console.log(error);
+      toastMessage(error.reason)
+      toastMessage("In goerli testnet we don't have many liquidity pools available, which may have been the reason for reversing the transaction.")
+    }finally{
+      setLoadingTransaction(false)
     }
     
   }
@@ -206,13 +202,16 @@ const TradeBox = ({user, provider, toast}) => {
     handleSelectToken("IN", tOut.indexTicker, tokenOut.ticker, tOut.amount)
   }
 
-  return (
+  return (<>
+    {loadingTransaction &&
+          <div className={styles.modal}><h1>LOADING....</h1></div>
+    }
     <div className={styles.tradebox}>
         <h2>Convert</h2>
         <form onSubmit={handleSwap}>
             <div className={styles.internal_box}>
             <p>Select token (In)</p>
-                <select onChange={(e) => handleSelectToken("IN" ,e.target.selectedIndex, e.target.value, tokenIn)} value={tokenIn.ticker}>
+                <select onChange={(e) => handleSelectToken("IN" ,e.target.selectedIndex, e.target.value, tokenIn)} disabled={loading} value={tokenIn.ticker}>
                     <option value={mainToken[0].ticker}>{mainToken[0].ticker}</option>
                     <option value={mainToken[1].ticker}>{mainToken[1].ticker}</option>
                     <option value={mainToken[2].ticker}>{mainToken[2].ticker}</option>
@@ -225,18 +224,18 @@ const TradeBox = ({user, provider, toast}) => {
                     </>
                 }
                 <p>Balance</p>
-                <p>{ loadingBalance ? 'Loading...' : tokenIn.balance}</p>
+                <p>{ loading ? 'Loading...' : tokenIn.balance}</p>
                 <p>Allowed</p>
-                <p>{ loadingBalance ? 'Loading...' : tokenIn.allowed}</p>
+                <p>{ loading ? 'Loading...' : tokenIn.allowed}</p>
                 <p>Amount</p> 
-                <input type='number' onChange={(e) => setTokenIn({...tokenIn, amount: e.target.value})} value={tokenIn.amount}/>
+                <input type='number' onChange={(e) => setTokenIn({...tokenIn, amount: e.target.value})} disabled={loading} value={tokenIn.amount}/>
             </div>
         </form>
-        <div className={styles.arrow_box} onClick={changeTokensInOut}></div>
+        <div className={styles.arrow_box} disabled={loading} onClick={changeTokensInOut}></div>
         <form>
             <div className={styles.internal_box}>
                 <p>Select token (Out)</p>
-                <select onChange={(e) => handleSelectToken("OUT", e.target.selectedIndex, e.target.value)} value={tokenOut.ticker}>
+                <select onChange={(e) => handleSelectToken("OUT", e.target.selectedIndex, e.target.value)} disabled={loading} value={tokenOut.ticker}>
                     <option value={mainToken[0].ticker}>{mainToken[0].ticker}</option>
                     <option value={mainToken[1].ticker}>{mainToken[1].ticker}</option>
                     <option value={mainToken[2].ticker}>{mainToken[2].ticker}</option>
@@ -245,21 +244,24 @@ const TradeBox = ({user, provider, toast}) => {
                 { tokenOut.ticker === 'OTHER' &&
                     <>
                         <p>Contract</p>
-                        <input type='text' onChange={(e) => handleOtherToken("OUT", e.target.value)} value={tokenOut.contract}/>
+                        <input type='text' onChange={(e) => handleOtherToken("OUT", e.target.value)} disabled={loading} value={tokenOut.contract}/>
                     </>
                 }
             </div>
         </form>
 
-        {(tokenIn.allowed < tokenIn.amount && user.connected )&&
-          <button className='btn btn-primary' onClick={handleApprove}>Approve</button>
+        { (tokenIn.allowed < tokenIn.amount) &&
+        <>
+          <button className='btn btn-primary' disabled={loading} onClick={handleApprove}>Approve</button></>
         }
 
-        {tokenIn.allowed >= tokenIn.amount &&
-          <button className='btn btn-primary'  onClick={handleSwap}>Trade tokens</button>
+        {(tokenIn.allowed >=  tokenIn.amount ) &&
+          <button className='btn btn-primary' disabled={loading} onClick={handleSwap}>Trade tokens</button>
         }
-    </div>
+       
+    </div></>
   )
+
 }
 
 export default TradeBox

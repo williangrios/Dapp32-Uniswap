@@ -6,11 +6,10 @@ import {ToastContainer, toast} from "react-toastify";
 //css
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
-import './App.css';
 
 //components
 import WRHeader from 'wrcomponents/dist/WRHeader';
-import WRFooter, { async } from 'wrcomponents/dist/WRFooter';
+import WRFooter from 'wrcomponents/dist/WRFooter';
 import WRContent from 'wrcomponents/dist/WRContent';
 import WRTools from 'wrcomponents/dist/WRTools';
 import Button from "react-bootstrap/Button";
@@ -109,9 +108,8 @@ function App() {
       <WRHeader title="SWAP TOKENS" image={true} />
       <WRContent>
         <h1>You are in the Ethereum Mainnet</h1>
-
         { !user.connected ?<>
-            <Button className="commands" variant="btn btn-primary" onClick={handleConnectWallet}>
+            <Button variant="btn btn-primary" onClick={handleConnectWallet}>
               <img src={meta} alt="metamask" width="30px" height="30px"/>Connect Metamask
             </Button></>
           : <>
@@ -119,13 +117,10 @@ function App() {
             <button className="btn btn-primary commands" onClick={handleDisconnect}>Disconnect</button>
           </>
         }
-        {loading &&
-          <h2>LOADING...</h2>
-        }
         <TradeBox user={user} provider={provider} toast={toast}/>
       </WRContent>
       <WRTools react={true} hardhat={true} bootstrap={true} solidity={true} css={true} javascript={true} ethersjs={true} />
-      {/* <WRFooter />   */}
+      <WRFooter />  
     </div>
   );
 }
