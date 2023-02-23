@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import WRHeader from 'wrcomponents/dist/WRHeader';
 import WRFooter from 'wrcomponents/dist/WRFooter';
 import WRContent from 'wrcomponents/dist/WRContent';
+import WRInfo from 'wrcomponents/dist/WRInfo';
 import WRTools from 'wrcomponents/dist/WRTools';
 import Button from "react-bootstrap/Button";
 import TradeBox from "./components/TradeBox";
@@ -105,9 +106,10 @@ function App() {
   return (
     <div className="App">
       <ToastContainer position="top-center" autoClose={5000}/>
-      <WRHeader title="SWAP TOKENS" image={true} />
+      <WRHeader title="UNISWAP - SWAP TOKENS" image={true} />
+      <WRInfo chain="Goerli" testnet={true}/>
       <WRContent>
-        <h1>You are in the Ethereum Mainnet</h1>
+        <h1>Connect to Goerli testnet</h1>
         { !user.connected ?<>
             <Button variant="btn btn-primary" onClick={handleConnectWallet}>
               <img src={meta} alt="metamask" width="30px" height="30px"/>Connect Metamask

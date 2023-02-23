@@ -228,10 +228,10 @@ const TradeBox = ({user, provider, toast}) => {
                 <p>Allowed</p>
                 <p>{ loading ? 'Loading...' : tokenIn.allowed}</p>
                 <p>Amount</p> 
-                <input type='number' onChange={(e) => setTokenIn({...tokenIn, amount: e.target.value})} disabled={loading} value={tokenIn.amount}/>
+                <input type='number' className={styles.inputAmount} onChange={(e) => setTokenIn({...tokenIn, amount: e.target.value})} disabled={loading} value={tokenIn.amount}/>
             </div>
         </form>
-        <div className={styles.arrow_box} disabled={loading} onClick={changeTokensInOut}></div>
+        <div className={styles.arrow_box} disabled={loading} onClick={changeTokensInOut}>>></div>
         <form>
             <div className={styles.internal_box}>
                 <p>Select token (Out)</p>
