@@ -2,7 +2,6 @@
     padding: 9px;
     border-radius: 8px;
     margin: 10px auto;
-    
     background-color: #ccc;
     display: flex;
     flex-direction: column;
@@ -72,7 +71,14 @@ input, select{
 
 .modal h1{
     text-align: center;
-    color: aqua;
     padding-top: 190px;
     color: white;
+}
+
+@media (max-width: 650px)
+{
+  .tradebox
+   {
+        max-width: 400px;
+   }
 }

@@ -2,6 +2,7 @@
 import {  useState, useEffect } from 'react';
 import { ethers } from "ethers";
 import {ToastContainer, toast} from "react-toastify";
+import './App.css'
 
 //css
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,6 +19,7 @@ import TradeBox from "./components/TradeBox";
 
 //assets
 import meta from "./assets/metamask.png";
+import AddLiquidityBox from './components/AddLiquidityBox';
 
 //infos
 const  INFURA_URL ="https://mainnet.infura.io/v3/7abcaefccf2a47e89fddeec51e91feb2"
@@ -47,8 +49,8 @@ function App() {
 
   async function handleConnectWallet (){
     try {
-      if (! await isEthereumMainnet()){
-        toastMessage('Change to ethereum mainnet.')
+      if (! await isGoerli()){
+        toastMessage('Change to goerli testnet.')
         return;
       }
 
@@ -59,12 +61,12 @@ function App() {
       // const contrSig = new ethers.Contract(contractAddress, LotteryContract.abi, provider.getSigner())
       // setSigner( contrSig)
     } catch (error) {
-      if (error.message === 'provider is undefined'){
+      if (error.message === 'provider is undefined' || 'window.ethereum is undefined'){
         toastMessage('No provider detected.')
       } else if(error.code === -32002){
         toastMessage('Check your metamask')
       }
-      console.log(error);
+      console.log(error.message);
     } finally{
       setLoading(false);
     }
@@ -78,7 +80,7 @@ function App() {
     return true;
   }
 
-  async function isEthereumMainnet(){
+  async function isGoerli(){
     const ethereumChainId = "0x5";
     const respChain = await getChain();
     console.log(respChain);
@@ -107,7 +109,7 @@ function App() {
     <div className="App">
       <ToastContainer position="top-center" autoClose={5000}/>
       <WRHeader title="UNISWAP - SWAP TOKENS" image={true} />
-      <WRInfo chain="Goerli" testnet={true}/>
+      {/* <WRInfo chain="Goerli" testnet={true}/> */}
       <WRContent>
         <h1>Connect to Goerli testnet</h1>
         { !user.connected ?<>
@@ -120,6 +122,7 @@ function App() {
           </>
         }
         <TradeBox user={user} provider={provider} toast={toast}/>
+        {/* <AddLiquidityBox /> */}
       </WRContent>
       <WRTools react={true} hardhat={true} bootstrap={true} solidity={true} css={true} javascript={true} ethersjs={true} />
       <WRFooter />  

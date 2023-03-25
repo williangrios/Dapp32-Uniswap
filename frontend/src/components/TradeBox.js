@@ -107,8 +107,6 @@ const TradeBox = ({user, provider, toast}) => {
     }finally{
       setLoading(false)
     }
-
-    
   }
 
   async function returnContractERC20Instance(contractAddress){
@@ -250,15 +248,21 @@ const TradeBox = ({user, provider, toast}) => {
             </div>
         </form>
 
-        { (tokenIn.allowed < tokenIn.amount) &&
-        <>
-          <button className='btn btn-primary' disabled={loading} onClick={handleApprove}>Approve</button></>
-        }
+        {
+          (tokenIn.amount == 0 || tokenIn.amount === '') ?
+              <button className='btn btn-primary' disabled={true}>Approve</button>
+            :
+            <>
+              { ( parseInt(tokenIn.allowed) < parseInt( tokenIn.amount)) &&
+              <>
+                <button className='btn btn-primary' disabled={loading} onClick={handleApprove}>Approve</button></>
+              }
 
-        {(tokenIn.allowed >=  tokenIn.amount ) &&
-          <button className='btn btn-primary' disabled={loading} onClick={handleSwap}>Trade tokens</button>
+              {( parseInt( tokenIn.allowed) >= parseInt( tokenIn.amount) ) &&
+                <button className='btn btn-primary' disabled={loading} onClick={handleSwap}>Trade tokens</button>
+              }    
+            </>
         }
-       
     </div></>
   )
 

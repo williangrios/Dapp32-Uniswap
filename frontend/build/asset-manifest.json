@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.99e453f8.css",
-    "main.js": "/static/js/main.b042c6bb.js",
+    "main.css": "/static/css/main.0ffa286d.css",
+    "main.js": "/static/js/main.a6d80467.js",
     "static/media/WILLOK.png": "/static/media/WILLOK.380a3a30d0e9764a24cc.png",
     "static/media/metamask.png": "/static/media/metamask.f1bc39a49a99e282a3a6.png",
     "static/media/star4.png": "/static/media/star4.2d5e9e829773f76fe18c.png",
@@ -12,11 +12,11 @@
     "static/media/site.png": "/static/media/site.007f6f738718d1057f24.png",
     "static/media/ipfslogo.svg": "/static/media/ipfslogo.b9dcddeeb62a2a5086af3c2d5f395f05.svg",
     "index.html": "/index.html",
-    "main.99e453f8.css.map": "/static/css/main.99e453f8.css.map",
-    "main.b042c6bb.js.map": "/static/js/main.b042c6bb.js.map"
+    "main.0ffa286d.css.map": "/static/css/main.0ffa286d.css.map",
+    "main.a6d80467.js.map": "/static/js/main.a6d80467.js.map"
   },
   "entrypoints": [
-    "static/css/main.99e453f8.css",
-    "static/js/main.b042c6bb.js"
+    "static/css/main.0ffa286d.css",
+    "static/js/main.a6d80467.js"
   ]
 }
